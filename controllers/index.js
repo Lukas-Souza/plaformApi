@@ -1,6 +1,6 @@
 const data = require('../data/index')
 const { search } = require('../routes')
-const chalk = require('chalk');
+const chalk = require('chalk')
 module.exports = {
     async searchById(req, res) {
         const { id } = req.params
@@ -40,23 +40,12 @@ module.exports = {
             console.log("erro")
             return res.json({ mesagem: "Solicitação recebida com sucesso", auth: true, Token })
         }
+        
         return await res.status(401).send("User não altorizado")
     
     },
-    auhenticatoinJwt(req, res, auhenticatoinJwt) {
-        const Token = req.headers('x-acces-token')
-        jwt.verify(Token, SECRET, (err) => {
-            if (err) {
-                return res.status(401).end
-            }
-            req.Id = decoded.Id
-            next();
-        })
-    },
-    stok(req, res, auhenticatoinJwt) {
-        
-
-
-        
+    async stok(req, res){
+        res.json({mensagemAuth:"Acesso liberado"})
     }
+
 }
