@@ -1,6 +1,6 @@
 const data = require('../data/index')
 const { search } = require('../routes')
-
+const chalk = require('chalk');
 module.exports = {
     async searchById(req, res) {
         const { id } = req.params
@@ -22,6 +22,7 @@ module.exports = {
             res.json(products)
         } catch (err) {
             res.status(500).json("Deu algo de errado: " + err)
+            console.log(chalk.red.bold('Ocorreu um erro no serviço: ' + err))
         }
     },
     async createItem(req, res) {
