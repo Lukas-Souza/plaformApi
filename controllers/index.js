@@ -1,6 +1,8 @@
+const { default: knex } = require('knex')
 const data = require('../data/index')
 const { search } = require('../routes')
 const chalk = require('chalk')
+const bcrypt = require('bcrypt')
 module.exports = {
     async searchById(req, res) {
         const { id } = req.params
@@ -25,6 +27,7 @@ module.exports = {
             console.log(chalk.red.bold('Ocorreu um erro no serviço: ' + err))
         }
     },
+    // Post
     async createItem(req, res) {
         try {
             const { title, yaerLancament, generi, directo, note } = req.params;
@@ -34,8 +37,12 @@ module.exports = {
             res.status(500).json({erro: "Postagen não concluida: "+ err})
       }
     },
+    //
     async authenticationUserToken(req, res) {
-        if (req.body.user == "Root" && req.body.password == "123") {
+        userVerify = req.body.user
+        userPassword = req.body.password
+
+        if (true) {
             const Token = jwt.sign({ id: 19 }, SECRET, { expiresIn: 300 })
             console.log("erro")
             return res.json({ mesagem: "Solicitação recebida com sucesso", auth: true})
