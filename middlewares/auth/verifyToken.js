@@ -7,12 +7,7 @@ const SERCRET = "#FF2324"
 
 // Token de verificação  de veracidade de Token
 function authenticatioUSer(req, res, next){
- try{
-    const tokenHeader = req.headers['x-access-token']
- }catch(err){
-    res.status(401).json('Ocorreu um erro desconhecido: ' + err)
-    next();
- }
+    const tokenHeader =  req.headers['authorization'];
  
 
  if(tokenHeader == null){
@@ -27,4 +22,4 @@ function authenticatioUSer(req, res, next){
  })
 }
 
-module.exports = verifyToken
+module.exports = authenticatioUSer

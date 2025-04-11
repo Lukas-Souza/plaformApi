@@ -38,7 +38,7 @@ module.exports = {
         if (req.body.user == "Root" && req.body.password == "123") {
             const Token = jwt.sign({ id: 19 }, SECRET, { expiresIn: 300 })
             console.log("erro")
-            return res.json({ mesagem: "Solicitação recebida com sucesso", auth: true, Token })
+            return res.json({ mesagem: "Solicitação recebida com sucesso", auth: true})
         }
         
         return await res.status(401).send("User não altorizado")
