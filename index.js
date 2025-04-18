@@ -10,6 +10,7 @@ app.use('/', routrs)
 
 app.listen(PORT, () => {
     console.log("API RODANDO: http://localhost:"+ PORT)
+    console.log(`Request itens: http://localhost:${PORT}/iten/1`)
 })
 
 

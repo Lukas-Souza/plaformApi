@@ -7,9 +7,16 @@ const middleware = require("../middlewares/auth/verifyToken")
 const SECRET = "PASSWORSECRET8"
 const jwt = require("jsonwebtoken")
 
+// Router get public 
 router.get('/', controller.selectAll)
-router.get('/user/:id', controller.searchById)
-router.post('/login', controller.authenticationUserToken )
-router.get('/stok', middleware,controller.stok)
+router.get('/filmes/:id', controller.searchById)
+
+// Router login post for admin
+router.post('/login', controller.authenticationUserToken)
+
+// Router private crate itens for admin
+router.post('/catalogo', middleware, controller.createItem) 
+router.get('/catalogido', middleware, controller.dasbordStok)
+
 
 module.exports = router;

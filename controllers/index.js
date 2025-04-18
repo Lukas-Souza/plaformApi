@@ -6,7 +6,7 @@ const { header } = require('express/lib/request.js')
 const jwt = require('jsonwebtoken')
 
 const SECRET_BCRYPT = '#F12(03LUC@$'
-const SECRET_JWT = "#Luc@$H("
+const SECRET_JWT = "#FF2324"
 
 
 module.exports = {
@@ -17,7 +17,6 @@ module.exports = {
             if (!products) {
                 return res.status(404).json({ erro: 'Produto não encontrado' })
             }
-            const conparyPassword = 
             res.json(products)
         } catch (err) {
             res.status(500).json({erro:'Não foi possivel reaçizar a buscar pelo ID'})
@@ -30,25 +29,11 @@ module.exports = {
             res.json(products)
         } catch (err) {
             res.status(500).json("Deu algo de errado: " + err)
-            console.log(chalk.red.bold('Ocorreu um erro no serviço: ' + err))
         }
     },
-    // Post
-    async createItem(req, res) {
-        try {
-            const { title, yaerLancament, generi, directo, note } = req.params;
-            const [id] = await  data('filmes').insert(title, generi, directo, yaerLancament, note)
-             res.status(200).json("Postagem realizada com sucesso!!") 
-        } catch (err) {
-            res.status(500).json("Postagen não concluida: ", err)
-      }
-    },
-    //
     async authenticationUserToken(req, res) {
             try{
-                const { username, password } = req.body 
-                
-            
+                const { username, password } = req.body       
             try{
                  const infoUser = await connectionAdminDataBase('admin').where({username}).first()
                 if (!infoUser) {
@@ -60,36 +45,41 @@ module.exports = {
                 if (verifyPassword) {
                   return res.json("senha incorreta")
                 }
-                const Token = jwt.sign({ id: infoUser.id }, SECRET_JWT, { expiresIn: 300 })
+                const Token = jwt.sign({ id: infoUser.id }, SECRET_JWT, { expiresIn: 30})
                 return res.json({ mesagem: "Solicitação recebida com sucesso", auth: true, Token})
 
             } catch (err) {
                 console.log("ocorreu um erro critico: "+err)
                 return res.json("ocorreu um erro de busca ao banco de dados")
             }
-                
-
-            } catch (err) {
-                
+            } catch (err) {   
                 return res.status(401).json({mensagem: "ocorreu um erro na coleta de dados", err});
-                  
             }
-            
-            
-            
-            // // Seclect * from Where "emai@gmai,com" 
-            // const infUser = knex('user').select({email}).first() 
-            // if(!infUser){
-            //     res.json("user does not exist")
-            
-        
-        
-        
- 
-    
     },
-    async stok(req, res){
+    async dasbordStok(req, res){
         res.json("Acesso liberado")
-    }
+    },
+    async deletItenStok(req, res) {
+        
+    },
+    async putStok(req, res) {
+        
+    },
+    async createItem(req, res) {
+        try {
+            const { title, yaerLancament, generi, directo, note } = req.body || {};
+                await connection('filmes').insert({
+                    titulo: title,
+                    genero: generi,
+                    diretor: directo,
+                    ano_lancamento: yaerLancament,
+                    nota: note
+                  });
+                  
+            return res.status(200).json("Postagem realizada com sucesso!!", title, generi, directo, yaerLancament, note) 
+        } catch (err) {
+            return res.status(500).json("Postagen não concluida: ", err)
+      }
+    },
 
 }
