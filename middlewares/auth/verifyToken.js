@@ -3,21 +3,23 @@ const res = require("express/lib/response")
 const jwt = require("jsonwebtoken")
 const { except } = require("../../data")
 
-const SERCRET = "#FF2324"
 
 // Token de verificação  de veracidade de Token
 function authenticatioUSer(req, res, next) {
+    try {
+        
     const tokenHeader =  req.headers['authorization'];
     if(tokenHeader == null){
         return res.status(401).json({mensagenErro: 'Tonke não recebido'})
     }
-    jwt.verify(tokenHeader, SERCRET, (err, user)=>{
+    jwt.verify(tokenHeader, process.env.JWT_SECRET_KEY, (err, user)=>{
     if(err){
-        res.status(401).json({mensagenErro: "Token invalido"})
+        return res.status(401).json({mensagenErro: "Token invalido", err})
         }
-        next()
-        
  })
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 module.exports = authenticatioUSer

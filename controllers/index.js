@@ -5,10 +5,6 @@ const bcrypt = require('bcryptjs')
 const { header } = require('express/lib/request.js')
 const jwt = require('jsonwebtoken')
 
-const SECRET_BCRYPT = '#F12(03LUC@$'
-const SECRET_JWT = "#FF2324"
-
-
 module.exports = {
     async searchById(req, res) {
         const { id } = req.params
@@ -45,11 +41,10 @@ module.exports = {
                 if (verifyPassword) {
                   return res.json("senha incorreta")
                 }
-                const Token = jwt.sign({ id: infoUser.id }, SECRET_JWT, { expiresIn: 30})
+                const Token = jwt.sign({ id: infoUser.id }, process.env.JWT_SECRET_KEY, { expiresIn: 30000000000})
                 return res.json({ mesagem: "Solicitação recebida com sucesso", auth: true, Token})
 
             } catch (err) {
-                console.log("ocorreu um erro critico: "+err)
                 return res.json("ocorreu um erro de busca ao banco de dados")
             }
             } catch (err) {   
@@ -60,9 +55,48 @@ module.exports = {
         res.json("Acesso liberado")
     },
     async deletItenStok(req, res) {
+        const {id} = req.params
+        try {
+
+            connection('filmes').
+            where(id).
+            del().then(() => {
+            res.json(`item com id ${id} deletado com sucesso`)
+            }).catch((err) => {
+            res.json(`ocorreu um erro`)
+            }).finally(() => {
+            connection.destroy()
+        })
+        } catch (err) {
+            console.log("Erro " + err)
+            return res.json(err)
+
+        }
+
         
     },
     async putStok(req, res) {
+        const { id } = req.params
+        const { title, yaerLancament, generi, directo, note } = req.body
+        try {
+            const updateSql = (await connection('filmes')).
+                where(id).
+                update({
+                    title,
+                    generi,
+                    directo,
+                    yaerLancament,
+                    note
+                })
+            if (updateSql === 0) {
+                res.status(404).json({mesagem: 'usuario não encontrado'})
+            }
+            return res.status(200).json({mensagem: 'item atualizado com sucesso'})
+        } catch (err) {
+            console.log(err)
+            res.json("ouve um erro")
+        }
+
         
     },
     async createItem(req, res) {
