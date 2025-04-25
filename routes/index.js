@@ -3,7 +3,10 @@ const router = express.Router() // Criação de routas
 const { default: knex } = require('knex');
 const controller = require('../controllers/index');
 const { except } = require('../data');
-const middleware = require("../middlewares/auth/verifyToken")
+const middleware = require("../middlewares/auth/verifyToken");
+const req = require('express/lib/request');
+const { json } = require('express/lib/response');
+const cn = require('../data/index')
 // Router get public 
 router.get('/', controller.selectAll)
 router.get('/filmes/:id', controller.searchById)
@@ -13,9 +16,10 @@ router.post('/login', controller.authenticationUserToken)
 
 // Router private crate itens for admin
 router.post('/catalogo', middleware, controller.createItem) 
-router.delete('/catalogo/:id', middleware, controller.deletItenStok)
-router.get('/catalogo', middleware, controller.dasbordStok)
+router.delete('/catalogo/', middleware, controller.deletItenStok)
 router.put('catalogo/:id', middleware, controller.putStok)
+
+// Adicionar Rota que retorna informações de usuario
 
 
 module.exports = router;

@@ -5,18 +5,19 @@ const { except } = require("../../data")
 
 
 // Token de verificação  de veracidade de Token
-function authenticatioUSer(req, res, next) {
+async function authenticatioUSer(req, res, next) {
     try {
         
-    const tokenHeader =  req.headers['authorization'];
+    const tokenHeader = req.headers['authorization'];
     if(tokenHeader == null){
         return res.status(401).json({mensagenErro: 'Tonke não recebido'})
     }
-    jwt.verify(tokenHeader, process.env.JWT_SECRET_KEY, (err, user)=>{
+    await jwt.verify(tokenHeader, process.env.JWT_SECRET_KEY, (err, user)=>{
     if(err){
         return res.status(401).json({mensagenErro: "Token invalido", err})
         }
- })
+    })
+        return next()
     } catch (err) {
         console.log(err)
     }

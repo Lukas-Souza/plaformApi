@@ -51,29 +51,18 @@ module.exports = {
                 return res.status(401).json({mensagem: "ocorreu um erro na coleta de dados", err});
             }
     },
-    async dasbordStok(req, res){
-        res.json("Acesso liberado")
-    },
     async deletItenStok(req, res) {
-        const {id} = req.params
-        try {
-
-            connection('filmes').
-            where(id).
-            del().then(() => {
-            res.json(`item com id ${id} deletado com sucesso`)
-            }).catch((err) => {
-            res.json(`ocorreu um erro`)
-            }).finally(() => {
-            connection.destroy()
-        })
-        } catch (err) {
-            console.log("Erro " + err)
-            return res.json(err)
-
-        }
-
-        
+            const id = req.query
+            try {
+                const resultado = await connection('filmes').where(id).del()
+                if (resultado == 0) {
+                    return res.json("dn")
+                }
+                console.log("item deletado com sucesso")
+                return res.json("item deletado com sucesso")
+            } catch (err) {
+                return res.json(err)
+            }
     },
     async putStok(req, res) {
         const { id } = req.params
@@ -95,9 +84,7 @@ module.exports = {
         } catch (err) {
             console.log(err)
             res.json("ouve um erro")
-        }
-
-        
+        }        
     },
     async createItem(req, res) {
         try {
@@ -115,5 +102,4 @@ module.exports = {
             return res.status(500).json("Postagen não concluida: ", err)
       }
     },
-
 }
