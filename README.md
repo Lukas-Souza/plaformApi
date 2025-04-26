@@ -7,3 +7,7 @@
 <h2>Usar a rota post com o CURL</h2>
 <p>Para mandarmos temos que entender que usamos o parametros <b>user</b> e <b>password</b></p>
 <p>curl -X POST http://localhost:3000/login -H "Content-Type: application/json" -d "{\"user\": \"Root\", \"password\": \"123\"}"</p>
+
+<p>docker exec -it 2b bash
+</p>
+mysql -u root -p

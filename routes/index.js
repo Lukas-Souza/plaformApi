@@ -19,7 +19,6 @@ router.post('/catalogo', middleware, controller.createItem)
 router.delete('/catalogo/', middleware, controller.deletItenStok)
 router.put('catalogo/:id', middleware, controller.putStok)
 
-// Adicionar Rota que retorna informações de usuario
 
 
 module.exports = router;

@@ -37,18 +37,20 @@ module.exports = {
                     return res.status(404).json( "usuario não encontrado", {username})
                 }
                 const verifyPassword = await bcrypt.compare(password, infoUser.password)
-                console.log(verifyPassword)
                 if (verifyPassword) {
                   return res.json("senha incorreta")
                 }
-                const Token = jwt.sign({ id: infoUser.id }, process.env.JWT_SECRET_KEY, { expiresIn: 30000000000})
-                return res.json({ mesagem: "Solicitação recebida com sucesso", auth: true, Token})
+                const Token = await jwt.sign({ id: infoUser.id }, process.env.JWT_SECRET_KEY, { expiresIn: 30000000000})
+                return res.json({ mesagem: "Solicitação recebida com sucesso", auth: true, Token,infoUser: {name: infoUser.username, status: infoUser.root, email: infoUser.email}})
 
             } catch (err) {
                 return res.json("ocorreu um erro de busca ao banco de dados")
             }
             } catch (err) {   
-                return res.status(401).json({mensagem: "ocorreu um erro na coleta de dados", err});
+             
+                console.log(err)
+                return res.status(401).json({ mensagem: "ocorreu um erro na coleta de dados", err });
+          
             }
     },
     async deletItenStok(req, res) {
@@ -101,5 +103,5 @@ module.exports = {
         } catch (err) {
             return res.status(500).json("Postagen não concluida: ", err)
       }
-    },
+    }
 }
