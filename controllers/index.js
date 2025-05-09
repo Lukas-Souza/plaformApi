@@ -3,13 +3,14 @@ const {connection, connectionAdminDataBase} = require('../data/index.js')
 const { search } = require('../routes')
 const bcrypt = require('bcryptjs')
 const { header } = require('express/lib/request.js')
-const jwt = require('jsonwebtoken')
+const creatJwt = require('../middlewares/createJwt/index.js')
+const { json } = require('express/lib/response.js')
 
 module.exports = {
     async searchById(req, res) {
-        const { id } = req.params
+        const  id  = req.query
         try {
-            const products = await connection('filmes').where({ id }).first();
+            const products = await connection('filmes').where(id).first();
             if (!products) {
                 return res.status(404).json({ erro: 'Produto não encontrado' })
             }
@@ -27,7 +28,7 @@ module.exports = {
             res.status(500).json("Deu algo de errado: " + err)
         }
     },
-    async authenticationUserToken(req, res) {
+    async authenticationUser(req, res, next) {
             try{
                 const { username, password } = req.body       
             try{
@@ -40,17 +41,19 @@ module.exports = {
                 if (verifyPassword) {
                   return res.json("senha incorreta")
                 }
-                const Token = await jwt.sign({ id: infoUser.id }, process.env.JWT_SECRET_KEY, { expiresIn: 30000000000})
-                return res.json({ mesagem: "Solicitação recebida com sucesso", auth: true, Token,infoUser: {name: infoUser.username, status: infoUser.root, email: infoUser.email}})
-
+                
+                 res.cookie('token', JSON.stringify(await creatJwt.creatJwt(infoUser.id)), {
+                    httpOnly: true, // Não acessível via JS
+                    secure: false, // Só funciona em HTTPS (produção)
+                    maxAge: 3600000 // 1 hora
+                 });
+                 return res.json("cookie croadp")
             } catch (err) {
-                return res.json("ocorreu um erro de busca ao banco de dados")
+                console.log(err)
+                return res.json("ocorreu um erro" + err)
             }
             } catch (err) {   
-             
-                console.log(err)
-                return res.status(401).json({ mensagem: "ocorreu um erro na coleta de dados", err });
-          
+                return res.status(401).json({ mensagem: "ocorreu um erro"});
             }
     },
     async deletItenStok(req, res) {
@@ -67,7 +70,7 @@ module.exports = {
             }
     },
     async putStok(req, res) {
-        const { id } = req.params
+        const id = req.query
         const { title, yaerLancament, generi, directo, note } = req.body
         try {
             const updateSql = (await connection('filmes')).
@@ -84,13 +87,16 @@ module.exports = {
             }
             return res.status(200).json({mensagem: 'item atualizado com sucesso'})
         } catch (err) {
-            console.log(err)
-            res.json("ouve um erro")
+            res.status(404).json("ouve um erro")
         }        
     },
     async createItem(req, res) {
         try {
             const { title, yaerLancament, generi, directo, note } = req.body || {};
+
+            if (req.boy == {}) {
+                return res.status(401).json('ocorreu um erro na requesição')
+            }
                 await connection('filmes').insert({
                     titulo: title,
                     genero: generi,
